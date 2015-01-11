@@ -22,7 +22,7 @@ import javax.servlet.ServletException;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WMSMapContent;
 import org.geoserver.wms.WebMap;
 import org.geoserver.wms.map.RenderedImageMap;
 import org.geotools.data.FeatureSource;
@@ -104,7 +104,7 @@ public class AcidMapService {
 	 */
 	public WebMap GetMap(GetMapRequest request) throws ServletException,
 			IOException, AcidMapException {
-		WMSMapContext mapContext = new WMSMapContext(request);
+		WMSMapContent mapContext = new WMSMapContent(request);
 		try {
 			if (request.getLayers() != null && request.getLayers().size() > 0) {
 				
@@ -159,7 +159,7 @@ public class AcidMapService {
 	 * @throws AcidMapException the acid map exception
 	 */
 	
-	public synchronized WebMap synchronizedRun(final GetMapRequest request, WMSMapContext mapContext) throws ServiceException, IOException, AcidMapException {
+	public synchronized WebMap synchronizedRun(final GetMapRequest request, WMSMapContent mapContext) throws ServiceException, IOException, AcidMapException {
 		Map<String, String> rawKvp = request.getRawKvp();
 		String valueColumn = rawKvp.get(AcidMapParameters.VALUE_COLUMN);
 
@@ -230,7 +230,7 @@ public class AcidMapService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws AcidMapException the acid map exception
 	 */
-	public WebMap run(final GetMapRequest request, WMSMapContext mapContext)
+	public WebMap run(final GetMapRequest request, WMSMapContent mapContext)
 			throws ServiceException, IOException, AcidMapException {
 
 		Configuration configuration = buildConfiguration(request);
@@ -415,7 +415,7 @@ public class AcidMapService {
         return combinedList;
     }
     
-    private WebMap buildErrorImage(GetMapRequest request, WMSMapContext mapContext, Exception e) {
+    private WebMap buildErrorImage(GetMapRequest request, WMSMapContent mapContext, Exception e) {
 		String message = e.getMessage();
 		if(message == null){
 			message = "Acid Map Server Error";
@@ -424,7 +424,7 @@ public class AcidMapService {
 		return buildRendererImageMap(errorImage, request.getFormat(), mapContext);
 	}
 	
-	private WebMap buildRendererImageMap(BufferedImage image, String format, WMSMapContext mapContext){
+	private WebMap buildRendererImageMap(BufferedImage image, String format, WMSMapContent mapContext){
 		final String outputFormat = format;
 		RenderedImageMap result = new RenderedImageMap(mapContext, image, outputFormat);
 		return result;
